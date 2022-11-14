@@ -1,4 +1,4 @@
-from board import Game
+from board import Game, Board
 
 def main():
     while True:
@@ -16,6 +16,7 @@ def main():
                 continue
         else:
             print("Illegal board size, Try Again!")
+    game.board.print()
 
 
 

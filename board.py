@@ -2,6 +2,7 @@ from player import Player,Point,Piece
 __all__ = [
     'Board',
     'Game',
+    'Move',
 ]
 
 class Board:
@@ -63,6 +64,21 @@ class Board:
                 counter += 1    
             print("")
 
+    #check if the move is legal
+    def check_move(self, player, start_point, end_point):
+        return 0
+    
+    #check if point is on board
+    def is_on_board(self, point):
+        return 0
+    
+    def get(self, point):
+        return self.board.get(point)
+
+class Move:
+    def __init__(self, start_point, end_point):
+        self.start_point = start_point
+        self.end_point = end_point
 
 class Game:
     def __init__(self, board, next_player, move, num):
@@ -74,3 +90,27 @@ class Game:
     def new_game(board_size, num):
         board = Board(board_size, num)
         return Game(board, Player.red, None, num)
+    
+    # return game status after the move 
+    def apply_move(self, move):
+        return 0
+    
+    #return if the move is legal
+    def is_valid_move(self, move):
+        return 0
+    
+    #return list of potential move of current player
+    def potential_move(self):
+        return 0
+    
+    #check if game is over
+    def is_over(self):
+        return 0
+
+    #check if there is winner
+    def check_win(self, player):
+        return 0
+        
+    #return winner
+    def winner(self):
+        return 0

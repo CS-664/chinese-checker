@@ -66,7 +66,16 @@ class Board:
 
     #check if the move is legal
     def check_move(self, player, start_point, end_point):
-        return 0
+        curMove = Move(start_point,end_point)
+        if player == Player.red:
+            if curMove.end_point.row < curMove.start_point.row or curMove.end_point.col < curMove.start_point.col:
+                return False
+        if player == Player.blue:
+            if curMove.end_point.row > curMove.start_point.row or curMove.end_point.col > curMove.start_point.col:
+                return False
+        # add if for other player if we need
+
+        return Game.is_valid_move(curMove)
     
     #check if point is on board
     def is_on_board(self, point):
@@ -110,15 +119,6 @@ class Game:
             return False
         elif self.board[move.end_point] is not None:       # if there has already had a piece on the end point
             return False
-
-        elif self.board[move.start_point] == Piece.red:
-            if move.end_point.row < move.start_point.row or move.end_point.col < move.start_point.col:
-                return False
-        elif self.board[move.start_point] == Piece.blue:
-            if move.end_point.row > move.start_point.row or move.end_point.col > move.start_point.col:
-                return False
-        # elif add new case for other players here if we need
-
         else:
             return True
     
@@ -138,15 +138,15 @@ class Game:
         Cyellow = []
         Corange = []
         Cpink = []
-        cWin = False
+        cWin = False      # return if target player win the game or not
         for i in range(self.board_size):
             for j in range(self.board_size):
                 point = Point(i, j)
                 if self.board[point] == Piece.red:
                     Cblue.append(point)
-                elif self.board[point] == Piece.blue:
+                if self.board[point] == Piece.blue:
                     Cred.append(point)
-                # elif.....     add code here for other players if we need
+                # if.....     add code here for other players if we need
         if player == Player.red:
             for k in range(len(Cred)):
                 if self.board[Cred[k]] == Piece.red:

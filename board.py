@@ -70,7 +70,11 @@ class Board:
     
     #check if point is on board
     def is_on_board(self, point):
-        return 0
+        if point.row < 0 or point.col < 0 or point.row >= self.board_size or point.col >= self.board_size:
+            return False
+        else:
+            return True
+        #return 0
     
     def get(self, point):
         return self.board.get(point)
@@ -93,11 +97,30 @@ class Game:
     
     # return game status after the move 
     def apply_move(self, move):
-        return 0
+        Board.board[move.end_point] = Board.board[move.start_point]
+        Board.board[move.start_point] = None               # update board information
+        Board.print()                                      # re-print new game board
+        return self.is_over()               # return game status if it's end or not
+
+
     
     #return if the move is legal
     def is_valid_move(self, move):
-        return 0
+        if move.end_point.row < 0 or move.end_point.row >= Board.size or move.end_point.col < 0 or move.end_point.col >= Board.size:  # if end point out of the board
+            return False
+        elif self.board[move.end_point] is not None:       # if there has already had a piece on the end point
+            return False
+
+        elif self.board[move.start_point] == Piece.red:
+            if move.end_point.row < move.start_point.row or move.end_point.col < move.start_point.col:
+                return False
+        elif self.board[move.start_point] == Piece.blue:
+            if move.end_point.row > move.start_point.row or move.end_point.col > move.start_point.col:
+                return False
+        # elif add new case for other players here if we need
+
+        else:
+            return True
     
     #return list of potential move of current player
     def potential_move(self):
@@ -109,7 +132,41 @@ class Game:
 
     #check if there is winner
     def check_win(self, player):
-        return 0
+        Cred = []      # list to check if red win the game
+        Cblue = []     # list to check if blue win the game
+        Cgreen = []
+        Cyellow = []
+        Corange = []
+        Cpink = []
+        cWin = False
+        for i in range(self.board_size):
+            for j in range(self.board_size):
+                point = Point(i, j)
+                if self.board[point] == Piece.red:
+                    Cblue.append(point)
+                elif self.board[point] == Piece.blue:
+                    Cred.append(point)
+                # elif.....     add code here for other players if we need
+        if player == Player.red:
+            for k in range(len(Cred)):
+                if self.board[Cred[k]] == Piece.red:
+                    cWin = True
+                else:
+                    cWin = False
+                    break
+        if player == Player.blue:
+            for k in range(len(Cblue)):
+                if self.board[Cblue[k]] == Piece.blue:
+                    cWin = True
+                else:
+                    cWin = False
+                    break
+        # add if here for other player if we need
+
+
+        return cWin
+
+
         
     #return winner
     def winner(self):

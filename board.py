@@ -145,13 +145,6 @@ class Board:
                 moves.extend(self.jump(end_point))
         return moves
 
-
-        return moves
-
-    
-
-
-
 class Move:
     def __init__(self, start_point, end_point):
         self.start_point = start_point
@@ -222,7 +215,7 @@ class Game:
         Corange = []
         Cpink = []
         cWin = False      # return if target player win the game or not
-        for i in range(self.board_size):
+        for i in range(self.size):
             for j in range(self.board_size):
                 point = Point(i, j)
                 if self.board[point] == Piece.red:

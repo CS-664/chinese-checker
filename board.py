@@ -63,6 +63,31 @@ class Board:
                     print("* ", end="")
                 counter += 1    
             print("")
+    def neibor(self,x,y):
+        neibor = []
+        if x - 1 >0 and x < self.size:
+            neibor.append([x - 1, y])
+            if y - 1 > 0 and y < self.size:
+                neibor.append([x, y - 1])
+                neibor.append([x - 1, y - 1])
+
+        if x + 1 < self.size:
+            neibor.append([x + 1, y])
+            if y + 1 < self.size:
+                neibor.append([x, y+1])
+                neibor.append([x + 1, y + 1])
+
+        if len(neibor) > 1:
+            neibor.sort()
+            length = len(neibor)
+            lastItem = neibor[length - 1]
+            for i in range(length - 2, -1, -1):
+                currentItem = neibor[i]
+                if currentItem == lastItem:
+                    neibor.remove(currentItem)
+                else:
+                    lastItem = currentItem
+        return neibor
 
     #check if the move is legal
     def check_move(self, player, start_point, end_point):
@@ -83,7 +108,7 @@ class Board:
             return False
         else:
             return True
-        #return 0
+
     
     def get(self, point):
         return self.board.get(point)
@@ -148,14 +173,22 @@ class Game:
         Board.board[move.end_point] = Board.board[move.start_point]
         Board.board[move.start_point] = None               # update board information
         Board.print()                                      # re-print new game board
-        return self.is_over()               # return game status if it's end or not
+        return Game(self.board,self.next_player,move,self.num)
 
+    
     #return if the move is legal
     def is_valid_move(self, move):
         if move.end_point.row < 0 or move.end_point.row >= Board.size or move.end_point.col < 0 or move.end_point.col >= Board.size:  # if end point out of the board
             return False
         elif self.board[move.end_point] is not None:       # if there has already had a piece on the end point
             return False
+        elif self.board[move.end_point] is None:
+            if self.board[move.start_point] == Piece.red:
+                if move.end_point.col < move.start_point.col:
+                    return False
+            if self.board[move.start_point] == Piece.blue:
+                if move.end_point.col > move.start_point.col:
+                    return False
         else:
             return True
     
@@ -196,7 +229,14 @@ class Game:
                     Cblue.append(point)
                 if self.board[point] == Piece.blue:
                     Cred.append(point)
-                # if.....     add code here for other players if we need
+                if self.board[point] == Piece.yellow:
+                    Cgreen.append(point)
+                if self.board[point] == Piece.green:
+                    Cyellow.append(point)
+                if self.board[point] == Piece.pink:
+                    Corange.append(point)
+                if self.board[point] == Piece.orange:
+                    Cpink.append(point)
         if player == Player.red:
             for k in range(len(Cred)):
                 if self.board[Cred[k]] == Piece.red:
@@ -211,7 +251,34 @@ class Game:
                 else:
                     cWin = False
                     break
-        # add if here for other player if we need
+        if player == Player.green:
+            for k in range(len(Cgreen)):
+                if self.board[Cgreen[k]] == Piece.green:
+                    cWin = True
+                else:
+                    cWin = False
+                    break
+        if player == Player.orange:
+            for k in range(len(Corange)):
+                if self.board[Corange[k]] == Piece.orange:
+                    cWin = True
+                else:
+                    cWin = False
+                    break
+        if player == Player.yellow:
+            for k in range(len(Cyellow)):
+                if self.board[Cyellow[k]] == Piece.yellow:
+                    cWin = True
+                else:
+                    cWin = False
+                    break
+        if player == Player.pink:
+            for k in range(len(Cpink)):
+                if self.board[Cpink[k]] == Piece.pink:
+                    cWin = True
+                else:
+                    cWin = False
+                    break
 
 
         return cWin

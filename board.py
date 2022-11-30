@@ -128,7 +128,10 @@ class Game:
     
     #check if game is over
     def is_over(self):
-        return 0
+        if self.check_win(Player.red) or self.check_win(Player.blue) or self.check_win(Player.green) or self.check_win(
+                Player.yellow) or self.check_win(Player.orange) or self.check_win(Player.pink):
+            return True
+        return False
 
     #check if there is winner
     def check_win(self, player):
@@ -170,4 +173,16 @@ class Game:
         
     #return winner
     def winner(self):
-        return 0
+        if self.check_win(Player.red):
+            return Player.red
+        if self.check_win(Player.blue):
+            return Player.blue
+        if self.check_win(Player.green):
+            return Player.green
+        if self.check_win(Player.yellow):
+            return Player.yellow
+        if self.check_win(Player.orange):
+            return Player.orange
+        if self.check_win(Player.pink):
+            return Player.pink
+        return None

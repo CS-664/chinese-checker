@@ -63,7 +63,43 @@ class Board:
                     print("* ", end="")
                 counter += 1    
             print("")
+    def neibor(self,x,y):
+        neibor = []
+        if x - 1 >=0 :
+            neibor.append([x - 1, y])
+            if y - 1 >= 0:
+                neibor.append([x, y - 1])
+                neibor.append([x - 1, y - 1])
 
+        if x + 1 <= self.size:
+            neibor.append([x + 1, y])
+            if y + 1 <= self.size:
+                neibor.append([x, y+1])
+                neibor.append([x + 1, y + 1])
+
+        if y + 1 <= self.size:
+            neibor.append([x, y+1])
+            if x + 1 <= self.size:
+                neibor.append([x + 1, y])
+                neibor.append([x + 1, y + 1])
+
+        if y - 1 >= 0:
+            neibor.append([x, y - 1])
+            if x - 1 >= 0:
+                neibor.append([x - 1, y])
+                neibor.append([x - 1, y - 1])
+            neibor.append([x - 1, y - 1])
+        neibor.sort()
+
+        length = len(neibor)
+        last = neibor[length - 1]
+        for i in range(length - 2, -1, -1):
+            now = neibor[i]
+            if now == last:
+                neibor.remove(now)
+            else:
+                last = now
+        return neibor
     #check if the move is legal
     def check_move(self, player, start_point, end_point):
         curMove = Move(start_point,end_point)

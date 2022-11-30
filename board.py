@@ -87,6 +87,45 @@ class Board:
     
     def get(self, point):
         return self.board.get(point)
+    
+    #Return Point
+    def get_all_pieces(self, piece):
+        pieces = []
+        for i in range(len(self.size)):
+            for j in range(len(self.size)):
+                if self.get(Point(i,j)) == piece:
+                    pieces.append(Point(i,j))
+        return pieces
+    
+    def jump(self, start_point):
+        moves = []
+        for middle_point in self.neighbor(start_point.row, start_point.col):
+            if self.get(middle_point) is None:
+                continue
+            sx, sy, mx, my = start_point.row, start_point.col, middle_point.row, middle_point.col 
+            if sx - 1 == mx and sy == my: # upper 
+                end_point = Point(sx-2,sy)
+            elif sx - 1 == mx and sy + 1 == my: # upper-right
+                end_point = Point(sx-2,sy+2)
+            elif sx == mx and sy + 1 == my: #right
+                end_point = Point(sx, sy+2)
+            elif sx + 1 == mx and sy == my: #bottom
+                end_point = Point(sx+2, sy)
+            elif sx + 1 == mx and sy - 1 == mx: #bottom-left
+                end_point = Point(sx+2, sy-2)
+            elif sx == my and sy - 1 == my: #left
+                end_point = Point(sx, sy-2)
+            if self.is_valid_move(Move(start_point, end_point)):
+                moves.append(Move(start_point, end_point))
+                moves.extend(self.jump(end_point))
+        return moves
+
+
+        return moves
+
+    
+
+
 
 class Move:
     def __init__(self, start_point, end_point):
@@ -111,8 +150,6 @@ class Game:
         Board.print()                                      # re-print new game board
         return self.is_over()               # return game status if it's end or not
 
-
-    
     #return if the move is legal
     def is_valid_move(self, move):
         if move.end_point.row < 0 or move.end_point.row >= Board.size or move.end_point.col < 0 or move.end_point.col >= Board.size:  # if end point out of the board
@@ -124,7 +161,17 @@ class Game:
     
     #return list of potential move of current player
     def potential_move(self):
-        return 0
+        moves= []
+        for p in self.board.get_all_pieces(self.next_player):
+            start_point = p
+            for neighbor in self.board.neighbor(p.row, p.col):
+                if self.is_valid_move(Move(p, neighbor)):
+                    moves.append(Move(p, neighbor))
+            jump_moves = self.board.jump(p)
+            for jump_move in jump_moves:
+                if self.is_valid_move(jump_move):
+                    moves.append(jump_move)
+        return moves
     
     #check if game is over
     def is_over(self):

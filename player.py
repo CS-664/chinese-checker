@@ -14,6 +14,9 @@ class Player(enum.Enum):
     orange = 5
     pink = 6
 
+    @property
+    def other(self):
+        return Player.red if self == Player.blue else Player.blue
     @property 
     def next(self):
         return Player.red if self == Player.pink else Player(self.value+1)

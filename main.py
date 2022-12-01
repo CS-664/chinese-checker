@@ -44,7 +44,7 @@ def main():
     while not game.is_over():
         game.board.print()
         alpha = RandomBot()
-        r = RandomBot()
+        silly = RandomBot()
         if game.next_player == red:
             
             '''
@@ -59,7 +59,7 @@ def main():
             '''
             move = alpha.move(game)
         else:
-            move = r.move(game)
+            move = silly.move(game)
         game = game.apply_move(move)
         os.system('clear')
         # move = bot.move(game)

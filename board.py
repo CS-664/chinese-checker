@@ -155,10 +155,10 @@ class Game:
             return False
         elif self.board.get(move.end_point) is None:
             if self.board.get(move.start_point) == Piece.red:
-                if move.end_point.col < move.start_point.col:
+                if move.end_point.row < move.start_point.row:
                     return False
             if self.board.get(move.start_point) == Piece.blue:
-                if move.end_point.col > move.start_point.col:
+                if move.end_point.row > move.start_point.row:
                     return False
         else:
             return True

@@ -66,17 +66,29 @@ class Board:
 
     def neighbor(self,x,y):
         neighbor = []
-        if x - 1 >0 and x < self.size:
-            neighbor.append(Point(x - 1, y))
-            if y - 1 > 0 and y < self.size:
-                neighbor.append(Point(x, y - 1))
-                neighbor.append(Point(x - 1, y - 1))
-
-        if x + 1 < self.size:
-            neighbor.append(Point(x + 1, y))
+        if x - 1 > 0 and x < self.size:
+            neighbor.append([x - 1, y])
             if y + 1 < self.size:
-                neighbor.append(Point(x, y+1))
-                neighbor.append(Point(x + 1, y + 1))
+                neighbor.append([x, y + 1])
+                neighbor.append([x - 1, y + 1])
+
+        if x + 1 <self.size:
+            neighbor.append([x + 1, y])
+            if y - 1 > 0 and y < self.size:
+                neighbor.append([x, y - 1])
+                neighbor.append([x + 1, y - 1])
+
+        if y + 1 < self.size:
+            neighbor.append([x, y + 1])
+            if x - 1 > 0 and x < self.size:
+                neighbor.append([x - 1, y])
+                neighbor.append([x - 1, y + 1])
+
+        if y - 1 > 0 and y < self.size:
+            neighbor.append([x, y - 1])
+            if x + 1 < self.size:
+                neighbor.append([x + 1, y])
+                neighbor.append([x + 1, y - 1])
 
         if len(neighbor) > 1:
             neighbor.sort()

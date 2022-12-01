@@ -1,5 +1,7 @@
 from board import Game, Board, Move
 from player import Point, Player
+from alphabeta import AlphaBetaAgent
+from randombot import RandomBot
 import os
 
 def print_board(board):
@@ -41,7 +43,11 @@ def main():
             print("Illegal board size, Try Again!")
     while not game.is_over():
         game.board.print()
+        alpha = RandomBot()
+        r = RandomBot()
         if game.next_player == red:
+            
+            '''
             while True:
                 try:
                     human_row, human_col = input('Enter your move: ').split()
@@ -50,8 +56,10 @@ def main():
                     print("Invalid Input, Try again")
             point = Point(int(human_row), int(human_col))
             move = Move(point)
+            '''
+            move = alpha.move(game)
         else:
-            print("No")
+            move = r.move(game)
         game = game.apply_move(move)
         os.system('clear')
         # move = bot.move(game)

@@ -63,44 +63,33 @@ class Board:
                     print("* ", end="")
                 counter += 1    
             print("")
-    def neibor(self,x,y):
-        neibor = []
+
+    def neighbor(self,x,y):
+        neighbor = []
         if x - 1 >0 and x < self.size:
-            neibor.append([x - 1, y])
+            neighbor.append(Point(x - 1, y))
             if y - 1 > 0 and y < self.size:
-                neibor.append([x, y - 1])
-                neibor.append([x - 1, y - 1])
+                neighbor.append(Point(x, y - 1))
+                neighbor.append(Point(x - 1, y - 1))
 
         if x + 1 < self.size:
-            neibor.append([x + 1, y])
+            neighbor.append(Point(x + 1, y))
             if y + 1 < self.size:
-                neibor.append([x, y+1])
-                neibor.append([x + 1, y + 1])
+                neighbor.append(Point(x, y+1))
+                neighbor.append(Point(x + 1, y + 1))
 
-        if len(neibor) > 1:
-            neibor.sort()
-            length = len(neibor)
-            lastItem = neibor[length - 1]
+        if len(neighbor) > 1:
+            neighbor.sort()
+            length = len(neighbor)
+            lastItem = neighbor[length - 1]
             for i in range(length - 2, -1, -1):
-                currentItem = neibor[i]
+                currentItem = neighbor[i]
                 if currentItem == lastItem:
-                    neibor.remove(currentItem)
+                    neighbor.remove(currentItem)
                 else:
                     lastItem = currentItem
-        return neibor
-
-    #check if the move is legal
-    def check_move(self, player, start_point, end_point):
-        curMove = Move(start_point,end_point)
-        if player == Player.red:
-            if curMove.end_point.row < curMove.start_point.row or curMove.end_point.col < curMove.start_point.col:
-                return False
-        if player == Player.blue:
-            if curMove.end_point.row > curMove.start_point.row or curMove.end_point.col > curMove.start_point.col:
-                return False
-        # add if for other player if we need
-
-        return Game.is_valid_move(curMove)
+        print("{} {} neighbors are {}".format(x, y, neighbor))
+        return neighbor
     
     #check if point is on board
     def is_on_board(self, point):
@@ -116,34 +105,11 @@ class Board:
     #Return Point
     def get_all_pieces(self, piece):
         pieces = []
-        for i in range(len(self.size)):
-            for j in range(len(self.size)):
-                if self.get(Point(i,j)) == piece:
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.get(Point(i,j)) is not None and self.get(Point(i,j)).value == piece:
                     pieces.append(Point(i,j))
         return pieces
-    
-    def jump(self, start_point):
-        moves = []
-        for middle_point in self.neighbor(start_point.row, start_point.col):
-            if self.get(middle_point) is None:
-                continue
-            sx, sy, mx, my = start_point.row, start_point.col, middle_point.row, middle_point.col 
-            if sx - 1 == mx and sy == my: # upper 
-                end_point = Point(sx-2,sy)
-            elif sx - 1 == mx and sy + 1 == my: # upper-right
-                end_point = Point(sx-2,sy+2)
-            elif sx == mx and sy + 1 == my: #right
-                end_point = Point(sx, sy+2)
-            elif sx + 1 == mx and sy == my: #bottom
-                end_point = Point(sx+2, sy)
-            elif sx + 1 == mx and sy - 1 == mx: #bottom-left
-                end_point = Point(sx+2, sy-2)
-            elif sx == my and sy - 1 == my: #left
-                end_point = Point(sx, sy-2)
-            if self.is_valid_move(Move(start_point, end_point)):
-                moves.append(Move(start_point, end_point))
-                moves.extend(self.jump(end_point))
-        return moves
 
 class Move:
     def __init__(self, start_point, end_point):
@@ -171,29 +137,52 @@ class Game:
     
     #return if the move is legal
     def is_valid_move(self, move):
-        if move.end_point.row < 0 or move.end_point.row >= Board.size or move.end_point.col < 0 or move.end_point.col >= Board.size:  # if end point out of the board
+        if move.end_point.row < 0 or move.end_point.row >= self.board.size or move.end_point.col < 0 or move.end_point.col >= self.board.size:  # if end point out of the board
             return False
-        elif self.board[move.end_point] is not None:       # if there has already had a piece on the end point
+        elif self.board.get(move.end_point) is not None:       # if there has already had a piece on the end point
             return False
-        elif self.board[move.end_point] is None:
-            if self.board[move.start_point] == Piece.red:
+        elif self.board.get(move.end_point) is None:
+            if self.board.get(move.start_point) == Piece.red:
                 if move.end_point.col < move.start_point.col:
                     return False
-            if self.board[move.start_point] == Piece.blue:
+            if self.board.get(move.start_point) == Piece.blue:
                 if move.end_point.col > move.start_point.col:
                     return False
         else:
             return True
     
+    def jump(self, start_point):
+        moves = []
+        for middle_point in self.board.neighbor(start_point.row, start_point.col):
+            if self.board.get(middle_point) is None:
+                continue
+            sx, sy, mx, my = start_point.row, start_point.col, middle_point.row, middle_point.col 
+            if sx - 1 == mx and sy == my: # upper 
+                end_point = Point(sx-2,sy)
+            elif sx - 1 == mx and sy + 1 == my: # upper-right
+                end_point = Point(sx-2,sy+2)
+            elif sx == mx and sy + 1 == my: #right
+                end_point = Point(sx, sy+2)
+            elif sx + 1 == mx and sy == my: #bottom
+                end_point = Point(sx+2, sy)
+            elif sx + 1 == mx and sy - 1 == mx: #bottom-left
+                end_point = Point(sx+2, sy-2)
+            elif sx == my and sy - 1 == my: #left
+                end_point = Point(sx, sy-2)
+            if self.is_valid_move(Move(start_point, end_point)):
+                moves.append(Move(start_point, end_point))
+                moves.extend(self.jump(end_point))
+        return moves
+
     #return list of potential move of current player
-    def potential_move(self):
+    def potential_moves(self):
         moves= []
-        for p in self.board.get_all_pieces(self.next_player):
+        for p in self.board.get_all_pieces(self.next_player.value):
             start_point = p
             for neighbor in self.board.neighbor(p.row, p.col):
                 if self.is_valid_move(Move(p, neighbor)):
                     moves.append(Move(p, neighbor))
-            jump_moves = self.board.jump(p)
+            jump_moves = self.jump(p)
             for jump_move in jump_moves:
                 if self.is_valid_move(jump_move):
                     moves.append(jump_move)
@@ -215,59 +204,59 @@ class Game:
         Corange = []
         Cpink = []
         cWin = False      # return if target player win the game or not
-        for i in range(self.size):
-            for j in range(self.board_size):
+        for i in range(self.board.size):
+            for j in range(self.board.size):
                 point = Point(i, j)
-                if self.board[point] == Piece.red:
+                if self.board.get(point) == Piece.red:
                     Cblue.append(point)
-                if self.board[point] == Piece.blue:
+                if self.board.get(point) == Piece.blue:
                     Cred.append(point)
-                if self.board[point] == Piece.yellow:
+                if self.board.get(point) == Piece.yellow:
                     Cgreen.append(point)
-                if self.board[point] == Piece.green:
+                if self.board.get(point) == Piece.green:
                     Cyellow.append(point)
-                if self.board[point] == Piece.pink:
+                if self.board.get(point) == Piece.pink:
                     Corange.append(point)
-                if self.board[point] == Piece.orange:
+                if self.board.get(point) == Piece.orange:
                     Cpink.append(point)
         if player == Player.red:
             for k in range(len(Cred)):
-                if self.board[Cred[k]] == Piece.red:
+                if self.board.get(Cred[k]) == Piece.red:
                     cWin = True
                 else:
                     cWin = False
                     break
         if player == Player.blue:
             for k in range(len(Cblue)):
-                if self.board[Cblue[k]] == Piece.blue:
+                if self.board.get(Cblue[k]) == Piece.blue:
                     cWin = True
                 else:
                     cWin = False
                     break
         if player == Player.green:
             for k in range(len(Cgreen)):
-                if self.board[Cgreen[k]] == Piece.green:
+                if self.board.get(Cgreen[k])== Piece.green:
                     cWin = True
                 else:
                     cWin = False
                     break
         if player == Player.orange:
             for k in range(len(Corange)):
-                if self.board[Corange[k]] == Piece.orange:
+                if self.board.get(Corange[k]) == Piece.orange:
                     cWin = True
                 else:
                     cWin = False
                     break
         if player == Player.yellow:
             for k in range(len(Cyellow)):
-                if self.board[Cyellow[k]] == Piece.yellow:
+                if self.board.get(Cyellow[k]) == Piece.yellow:
                     cWin = True
                 else:
                     cWin = False
                     break
         if player == Player.pink:
             for k in range(len(Cpink)):
-                if self.board[Cpink[k]] == Piece.pink:
+                if self.board.get(Cpink[k]) == Piece.pink:
                     cWin = True
                 else:
                     cWin = False

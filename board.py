@@ -67,28 +67,28 @@ class Board:
     def neighbor(self,x,y):
         neighbor = []
         if x - 1 >= 0 and x < self.size:
-            neighbor.append([x - 1, y])
+            neighbor.append(Point(x - 1, y))
             if y + 1 < self.size:
-                neighbor.append([x, y + 1])
-                neighbor.append([x - 1, y + 1])
+                neighbor.append(Point(x, y + 1))
+                neighbor.append(Point(x - 1, y + 1))
 
         if x + 1 < self.size:
-            neighbor.append([x + 1, y])
+            neighbor.append(Point(x + 1, y))
             if y - 1 >= 0 and y < self.size:
-                neighbor.append([x, y - 1])
-                neighbor.append([x + 1, y - 1])
+                neighbor.append(Point(x, y - 1))
+                neighbor.append(Point(x + 1, y - 1))
 
         if y + 1 < self.size:
-            neighbor.append([x, y + 1])
+            neighbor.append(Point(x, y + 1))
             if x - 1 >= 0 and x < self.size:
-                neighbor.append([x - 1, y])
-                neighbor.append([x - 1, y + 1])
+                neighbor.append(Point(x - 1, y))
+                neighbor.append(Point(x - 1, y + 1))
 
         if y - 1 >= 0 and y < self.size:
-            neighbor.append([x, y - 1])
+            neighbor.append(Point(x, y - 1))
             if x + 1 < self.size:
-                neighbor.append([x + 1, y])
-                neighbor.append([x + 1, y - 1])
+                neighbor.append(Point(x + 1, y))
+                neighbor.append(Point(x + 1, y - 1))
 
         if len(neighbor) > 1:
             neighbor.sort()
@@ -169,6 +169,7 @@ class Game:
             if self.board.get(middle_point) is None:
                 continue
             sx, sy, mx, my = start_point.row, start_point.col, middle_point.row, middle_point.col 
+            print("middle is {}, start is {}".format(middle_point, start_point))
             if sx - 1 == mx and sy == my: # upper 
                 end_point = Point(sx-2,sy)
             elif sx - 1 == mx and sy + 1 == my: # upper-right
@@ -177,9 +178,9 @@ class Game:
                 end_point = Point(sx, sy+2)
             elif sx + 1 == mx and sy == my: #bottom
                 end_point = Point(sx+2, sy)
-            elif sx + 1 == mx and sy - 1 == mx: #bottom-left
+            elif sx + 1 == mx and sy - 1 == my: #bottom-left
                 end_point = Point(sx+2, sy-2)
-            elif sx == my and sy - 1 == my: #left
+            elif sx == mx and sy - 1 == my: #left
                 end_point = Point(sx, sy-2)
             if self.is_valid_move(Move(start_point, end_point)):
                 moves.append(Move(start_point, end_point))
@@ -189,6 +190,7 @@ class Game:
     #return list of potential move of current player
     def potential_moves(self):
         moves= []
+        print(len(self.board.get_all_pieces(self.next_player.value)))
         for p in self.board.get_all_pieces(self.next_player.value):
             start_point = p
             for neighbor in self.board.neighbor(p.row, p.col):

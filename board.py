@@ -137,7 +137,7 @@ class Game:
         self.next_player = next_player
         self.last_move = move
         self.num = num 
-    
+
     def new_game(board_size, num):
         board = Board(board_size, num)
         return Game(board, Player.red, None, num)
@@ -152,18 +152,23 @@ class Game:
     
     #return if the move is legal
     def is_valid_move(self, move):
+        start_depth,end_depth = 0,0
         if move.end_point.row < 0 or move.end_point.row >= self.board.size or move.end_point.col < 0 or move.end_point.col >= self.board.size:  # if end point out of the board
             return False
         elif self.board.get(move.end_point) is not None:       # if there has already had a piece on the end point
             return False
         elif self.board.get(move.end_point) is None:
             if self.board.get(move.start_point) == Piece.red:
-                if move.end_point.col < move.start_point.col:
+                start_depth = move.start_point.row + move.start_point.col
+                end_depth = move.end_point.row + move.end_point.col
+                if end_depth < start_depth:
                     return False
                 else:
                     return True
             if self.board.get(move.start_point) == Piece.blue:
-                if move.end_point.col > move.start_point.col:
+                start_depth = move.start_point.row + move.start_point.col
+                end_depth = move.end_point.row + move.end_point.col
+                if end_depth > start_depth:
                     return False
                 else:
                     return True

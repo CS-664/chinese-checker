@@ -152,7 +152,6 @@ class Game:
     
     #return if the move is legal
     def is_valid_move(self, move):
-        start_depth,end_depth = 0,0
         if move.end_point.row < 0 or move.end_point.row >= self.board.size or move.end_point.col < 0 or move.end_point.col >= self.board.size:  # if end point out of the board
             return False
         elif self.board.get(move.end_point) is not None:       # if there has already had a piece on the end point

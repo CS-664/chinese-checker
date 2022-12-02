@@ -228,71 +228,57 @@ class Game:
 
     #check if there is winner
     def check_win(self, player):
-        Cred = []      # list to check if red win the game
-        Cblue = []     # list to check if blue win the game
-        Cgreen = []
-        Cyellow = []
-        Corange = []
-        Cpink = []
-        cWin = False      # return if target player win the game or not
-        for i in range(self.board.size):
-            for j in range(self.board.size):
-                point = Point(i, j)
-                if self.board.get(point) == Piece.red:
-                    Cblue.append(point)
-                if self.board.get(point) == Piece.blue:
-                    Cred.append(point)
-                if self.board.get(point) == Piece.yellow:
-                    Cgreen.append(point)
-                if self.board.get(point) == Piece.green:
-                    Cyellow.append(point)
-                if self.board.get(point) == Piece.pink:
-                    Corange.append(point)
-                if self.board.get(point) == Piece.orange:
-                    Cpink.append(point)
-        if player == Player.red:
-            for k in range(len(Cred)):
-                if self.board.get(Cred[k]) == Piece.red:
-                    cWin = True
-                else:
-                    cWin = False
-                    break
-        if player == Player.blue:
-            for k in range(len(Cblue)):
-                if self.board.get(Cblue[k]) == Piece.blue:
-                    cWin = True
-                else:
-                    cWin = False
-                    break
-        if player == Player.green:
-            for k in range(len(Cgreen)):
-                if self.board.get(Cgreen[k])== Piece.green:
-                    cWin = True
-                else:
-                    cWin = False
-                    break
-        if player == Player.orange:
-            for k in range(len(Corange)):
-                if self.board.get(Corange[k]) == Piece.orange:
-                    cWin = True
-                else:
-                    cWin = False
-                    break
-        if player == Player.yellow:
-            for k in range(len(Cyellow)):
-                if self.board.get(Cyellow[k]) == Piece.yellow:
-                    cWin = True
-                else:
-                    cWin = False
-                    break
-        if player == Player.pink:
-            for k in range(len(Cpink)):
-                if self.board.get(Cpink[k]) == Piece.pink:
-                    cWin = True
-                else:
-                    cWin = False
-                    break
-
+        if self.board.size == 6:
+            cRed = {Point(5,5),Point(4,5),Point(3,5),Point(5,4),Point(4,4),Point(5,3)}
+            cBlue = {Point(0,0),Point(0,1),Point(0,2),Point(1,0),Point(1,1),Point(2,0)}
+            if player == Player.red:
+                for point in cRed:
+                    if self.board.get(point) == Piece.red:
+                        cWin = True
+                    else:
+                        cWin = False
+                        break
+            else:
+                for point in cBlue:
+                    if self.board.get(point) == Piece.blue:
+                        cWin = True
+                    else:
+                        cWin = False
+                        break
+        if self.board.size == 7:
+            cRed = {Point(6, 6), Point(5, 6), Point(4, 6), Point(6, 5), Point(5, 5), Point(6, 4)}
+            cBlue = {Point(0, 0), Point(0, 1), Point(0, 2), Point(1, 0), Point(1, 1), Point(2, 0)}
+            if player == Player.red:
+                for point in cRed:
+                    if self.board.get(point) == Piece.red:
+                        cWin = True
+                    else:
+                        cWin = False
+                        break
+            else:
+                for point in cBlue:
+                    if self.board.get(point) == Piece.blue:
+                        cWin = True
+                    else:
+                        cWin = False
+                        break
+        if self.board.size == 9:
+            cRed = {Point(8, 8), Point(7, 8), Point(6, 8), Point(8, 7), Point(7, 7), Point(8, 6)}
+            cBlue = {Point(0, 0), Point(0, 1), Point(0, 2), Point(1, 0), Point(1, 1), Point(2, 0)}
+            if player == Player.red:
+                for point in cRed:
+                    if self.board.get(point) == Piece.red:
+                        cWin = True
+                    else:
+                        cWin = False
+                        break
+            else:
+                for point in cBlue:
+                    if self.board.get(point) == Piece.blue:
+                        cWin = True
+                    else:
+                        cWin = False
+                        break
 
         return cWin
 

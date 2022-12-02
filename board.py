@@ -1,4 +1,3 @@
-import time
 from player import Player,Point,Piece
 __all__ = [
     'Board',
@@ -180,7 +179,7 @@ class Game:
             if self.board.get(middle_point) is None:
                 continue
             sx, sy, mx, my = start_point.row, start_point.col, middle_point.row, middle_point.col 
-            print("start is {}, middle is {}".format(start_point, middle_point))
+            #print("start is {}, middle is {}".format(start_point, middle_point))
             if sx - 1 == mx and sy == my: # upper 
                 end_point = Point(sx-2,sy)
             elif sx - 1 == mx and sy + 1 == my: # upper-right
@@ -195,23 +194,19 @@ class Game:
                 end_point = Point(sx, sy-2)
             if self.is_valid_move(Move(start_point, end_point)):
                 moves.append(Move(start_point, end_point))
-                print("start point is {}".format(end_point))
+                #print("start point is {}".format(end_point))
                 moves.extend(self.jump(end_point))
         return moves
 
     #return list of potential move of current player
     def potential_moves(self):
         moves= []
-        print(self.next_player.value)
-        print(self.board.get_all_pieces(self.next_player.value))
         for p in self.board.get_all_pieces(self.next_player.value):
             start_point = p
             for neighbor in self.board.neighbor(p.row, p.col):
-                print("{} to {} is {}".format(p, neighbor, self.is_valid_move(Move(p, neighbor))))
+                #print("{} to {} is {}".format(p, neighbor, self.is_valid_move(Move(p, neighbor))))
                 if self.is_valid_move(Move(p, neighbor)):
                     moves.append(Move(p, neighbor))
-            print(p)
-            time.sleep(0.1)
             jump_moves = self.jump(p)
             for jump_move in jump_moves:
                 if self.is_valid_move(jump_move):

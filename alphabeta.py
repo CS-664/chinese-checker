@@ -3,7 +3,6 @@ from player import Player
 
 MAX_SCORE = 100
 MIN_SCORE = -100
-DRAW_SCORE = 1
 
 def alphabeta_result(game_state, best_x, best_o):
     if game_state.is_over():
@@ -21,13 +20,13 @@ def alphabeta_result(game_state, best_x, best_o):
         my_result = -1 * opponent_result
         if my_result > best_result:
             best_result = my_result
-        if game_state.next_player == Player.o:
+        if game_state.next_player == Player.red:
             if best_result > best_o:
                 best_o = best_result
             result_x = -1 * best_result
             if result_x < best_x:
                 return best_result
-        elif game_state.next_player == Player.x:
+        elif game_state.next_player == Player.blue:
             if best_result > best_x:
                 best_x = best_result
             result_o = -1 * best_result

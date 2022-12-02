@@ -2,7 +2,9 @@ from board import Game, Board, Move
 from player import Point, Player
 from alphabeta import AlphaBetaAgent
 from randombot import RandomBot
+from greedy import GreedyAgent
 import os
+import time
 
 def print_board(board):
     for i in range(board):
@@ -43,7 +45,8 @@ def main():
             print("Illegal board size, Try Again!")
     while not game.is_over():
         game.board.print()
-        alpha = RandomBot()
+        time.sleep(1)
+        alpha = GreedyAgent()
         silly = RandomBot()
         if game.next_player == red:
             

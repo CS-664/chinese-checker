@@ -6,20 +6,6 @@ from greedy import GreedyAgent
 import os
 import time
 
-def print_board(board):
-    for i in range(board):
-        for j in range(board - i):
-            print(" ")
-            j += 1
-        for k in range(2 * i - 1):
-            if k == 0 or k == 2 * i - 2:
-                print("*")
-            else:
-                print(" ")
-            k += 1
-        print("\n")
-        i += 1
-
 def main():
     red = Player.red
     blue = Player.blue
@@ -27,9 +13,10 @@ def main():
     yellow = Player.yellow
     orange = Player.orange
     pink = Player.pink
+    round = 0
     while True:
 
-        board_size = input("Please select board size (6/7/9): ")
+        board_size = '6'#input("Please select board size (6/7/9): ")
         if board_size == '6':
             game = Game.new_game(6, 2)
             break
@@ -44,10 +31,11 @@ def main():
         else:
             print("Illegal board size, Try Again!")
     while not game.is_over():
+        round += 1
         game.board.print()
         time.sleep(1)
-        alpha = GreedyAgent()
-        silly = RandomBot()
+        alpha = AlphaBetaAgent()
+        silly = GreedyAgent()
         if game.next_player == red:
             
             '''
@@ -70,7 +58,7 @@ def main():
     game.board.print()
     winner = game.winner()
     if winner is not None:
-        print(winner, " is the winner ")
+        print("{} is the winner in {} rounds".format(winner, round))
 
 
 

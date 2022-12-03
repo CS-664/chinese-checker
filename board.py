@@ -1,4 +1,5 @@
 from player import Player,Point,Piece
+import copy
 __all__ = [
     'Board',
     'Game',
@@ -143,10 +144,10 @@ class Game:
     
     # return game status after the move 
     def apply_move(self, move):
-        self.board.update(move.end_point, self.board.get(move.start_point))
-        self.board.update(move.start_point, None)              # update board information
-        self.board.print()                                      # re-print new game board
-        return Game(self.board,self.next_player.other,move,self.num)
+        next_board = copy.deepcopy(self.board)
+        next_board.update(move.end_point, next_board.get(move.start_point))
+        next_board.update(move.start_point, None)              # update board information                                      # re-print new game board
+        return Game(next_board,self.next_player.other,move,self.num)
 
     
     #return if the move is legal

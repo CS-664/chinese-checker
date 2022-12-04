@@ -1,54 +1,57 @@
 import random 
 from player import Player
 from board import *
+import time
 
 MAX_SCORE = 10000
 MIN_SCORE = -10000
-DEPTH = 5
+DEPTH = 500
 
 def alphabeta(game_state, depth, alpha, beta):
         if game_state.is_over():
             if game_state.winner() == Player.red:
-                return MAX_SCORE, game_state.last_move
+                return MAX_SCORE, None
             else:
-                return MIN_SCORE, game_state.last_move
+                return MIN_SCORE, None
         if depth == 0:
             score = cal_score(game_state)
-            return score, None
+            print(score)
+            time.sleep(2)
+            return score, game_state.last_move
         
         scores = []
         moves = []
         if game_state.next_player == Player.red:
             for move in game_state.potential_moves():
                 next_state = game_state.apply_move(move)
-                (score, next_move) = alphabeta(game_state, depth - 1, alpha, beta)
+                score, next_move = alphabeta(next_state, depth - 1, alpha, beta)
                 scores.append(score)
                 moves.append(move)
                 alpha = max(score, alpha)
                 if beta <= alpha:
-                    break 
+                    return beta, move
             if len(scores) == 0:
-                return 0, None
+                return 
             max_score_index = scores.index(max(scores))
             best_move = moves[max_score_index]
             return scores[max_score_index], best_move
         else:
             for move in game_state.potential_moves():
                 next_state = game_state.apply_move(move)
-                score, next_move = alphabeta_result(game_state, depth - 1, alpha, beta)
+                score, next_move = alphabeta(next_state, depth - 1, alpha, beta)
                 scores.append(score)
                 moves.append(move)
                 beta = min(score, beta)
                 if beta <= alpha:
-                    break 
+                    return alpha, move
             if len(scores) == 0:
-                return 0, None
+                return 
             min_score_index = scores.index(min(scores))
             worst_move = moves[min_score_index]
             return scores[min_score_index], worst_move
 
 def cal_score(game_state):
-    score = 1000
+    score = 0
     target_layer = 0
     if game_state.next_player.value == Player.red:
         target_layer = 10
@@ -56,8 +59,13 @@ def cal_score(game_state):
         target_layer = 0
     for p in game_state.board.get_all_pieces(game_state.next_player.value):
         layer = p.row + p.col #what layer is p in
-        score -= abs(layer - target_layer)
+        score += abs(layer - target_layer)
     return score
+
+def cal_avg_distance(game_state, piece):
+    for p in game_state.board.get_all_pieces(piece):
+        x, y = p.row, p.col
+        square_y 
 
 
 def alphabeta_result(game_state, depth, alpha, beta):
@@ -133,5 +141,5 @@ class AlphaBetaAgent():
     def move(self, game_state):
         alpha = MIN_SCORE
         beta = MIN_SCORE
-        (scores, best_move) = alphabeta(game_state, DEPTH, alpha, beta)
+        scores, best_move = alphabeta(game_state, DEPTH, alpha, beta)
         return best_move

@@ -3,7 +3,6 @@ from player import Point, Player
 from alphabeta import AlphaBetaAgent
 from randombot import RandomBot
 from greedy import GreedyAgent
-from maxsearch import MaxAgent
 import os
 import time
 
@@ -35,8 +34,8 @@ def main():
         round += 1
         game.board.print()
         #time.sleep(1)
-        alpha = MaxAgent()
-        silly = RandomBot()
+        alpha = AlphaBetaAgent(Player.red)
+        silly = GreedyAgent()
         if game.next_player == red:
             
             '''

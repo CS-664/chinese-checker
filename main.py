@@ -33,8 +33,8 @@ def main():
     while not game.is_over():
         round += 1
         game.board.print()
-        time.sleep(1)
-        alpha = AlphaBetaAgent()
+        #time.sleep(1)
+        alpha = AlphaBetaAgent(Player.red)
         silly = GreedyAgent()
         if game.next_player == red:
             

@@ -151,20 +151,24 @@ class Game:
 
     
     #return if the move is legal
-    def is_valid_move(self, move):
+    def is_valid_move(self, move, s):
         if move.end_point.row < 0 or move.end_point.row >= self.board.size or move.end_point.col < 0 or move.end_point.col >= self.board.size:  # if end point out of the board
             return False
         elif self.board.get(move.end_point) is not None:       # if there has already had a piece on the end point
             return False
         elif self.board.get(move.end_point) is None:
-            if self.board.get(move.start_point) == Piece.red:
+            if s is None:
+                start = move.start_point
+            else:
+                start = s
+            if self.board.get(start) == Piece.red:
                 start_depth = move.start_point.row + move.start_point.col
                 end_depth = move.end_point.row + move.end_point.col
                 if end_depth < start_depth:
                     return False
                 else:
                     return True
-            if self.board.get(move.start_point) == Piece.blue:
+            if self.board.get(start) == Piece.blue:
                 start_depth = move.start_point.row + move.start_point.col
                 end_depth = move.end_point.row + move.end_point.col
                 if end_depth > start_depth:
@@ -174,12 +178,12 @@ class Game:
         else:
             return True
     
-    def jump(self, start_point):
+    def jump(self, start_point, current_point, jumped):
         moves = []
-        for middle_point in self.board.neighbor(start_point.row, start_point.col):
+        for middle_point in self.board.neighbor(current_point.row, current_point.col):
             if self.board.get(middle_point) is None:
                 continue
-            sx, sy, mx, my = start_point.row, start_point.col, middle_point.row, middle_point.col 
+            sx, sy, mx, my = current_point.row, current_point.col, middle_point.row, middle_point.col 
             #print("start is {}, middle is {}".format(start_point, middle_point))
             if sx - 1 == mx and sy == my: # upper 
                 end_point = Point(sx-2,sy)
@@ -193,24 +197,27 @@ class Game:
                 end_point = Point(sx+2, sy-2)
             elif sx == mx and sy - 1 == my: #left
                 end_point = Point(sx, sy-2)
-            if self.is_valid_move(Move(start_point, end_point)):
-                moves.append(Move(start_point, end_point))
-                #print("start point is {}".format(end_point))
-                moves.extend(self.jump(end_point))
+            #print("{}, {} to {}, {} is {}".format(current_point.row, current_point.col, end_point.row, end_point.col, self.is_valid_move(Move(current_point, end_point),start_point)))
+            if self.is_valid_move(Move(current_point, end_point),start_point):
+                if end_point not in jumped:
+                    jumped.append(current_point)
+                    moves.append(Move(start_point, end_point))
+                    #print("start point is {}".format(end_point))
+                    moves.extend(self.jump(start_point,end_point,jumped))
+                    #print("{} hello".format(self.jump(start_point,end_point,jumped)))
         return moves
 
     #return list of potential move of current player
     def potential_moves(self):
         moves= []
         for p in self.board.get_all_pieces(self.next_player.value):
-            start_point = p
             for neighbor in self.board.neighbor(p.row, p.col):
                 #print("{} to {} is {}".format(p, neighbor, self.is_valid_move(Move(p, neighbor))))
-                if self.is_valid_move(Move(p, neighbor)):
+                if self.is_valid_move(Move(p, neighbor),None):
                     moves.append(Move(p, neighbor))
-            jump_moves = self.jump(p)
+            jump_moves = self.jump(p,p,[])
             for jump_move in jump_moves:
-                if self.is_valid_move(jump_move):
+                if self.is_valid_move(jump_move,None):
                     moves.append(jump_move)
         return moves
     

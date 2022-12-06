@@ -144,6 +144,8 @@ class Game:
     
     # return game status after the move 
     def apply_move(self, move):
+        if move is None:
+            return Game(self.board, self.next_player.other, None, self.num)
         next_board = copy.deepcopy(self.board)
         next_board.update(move.end_point, next_board.get(move.start_point))
         next_board.update(move.start_point, None)              # update board information                                      # re-print new game board

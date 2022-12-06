@@ -6,16 +6,20 @@ MAX_SCORE = 10000
 MIN_SCORE = -10000
 DEPTH = 3
 
-def cal_score(game_state):
+def cal_score(game_state, player):
     score = 0
     bias_fine = 0.2
     last_chess_fine = 0.5
-    last_chess = 0
-    for p in game_state.board.get_all_pieces(Player.red.value):
-        layer = p.row + p.col #what layer is p in
-        if last_chess < 10 - layer:
-            last_chess = 10 - layer
-        score += layer - bias_fine * abs(p.row - p.col)
+    last_chess = 0 
+    for p in game_state.board.get_all_pieces(player.value):
+        if player == Player.red:
+            layer = p.row + p.col #what layer is p in
+            if last_chess < 10 - layer:
+                last_chess = 10 - layer
+            score += layer - bias_fine * abs(p.row - p.col)
+        else:
+            layer = p.row + p.col
+            last_chess = max(last_chess, layer)
     score += 60 + bias_fine * 7 - last_chess_fine * last_chess 
         
     return score
@@ -39,6 +43,8 @@ class AlphaBetaAgent():
                 best_score = score
             elif score == best_score:
                 best_moves.append(move)
+        if len(best_moves) == 0:
+            return None
         return random.choice(best_moves)
     
     def alphabeta_result(self, game_state, depth, alpha, beta):
@@ -48,7 +54,7 @@ class AlphaBetaAgent():
 
         
         if depth == 0:
-            return cal_score(game_state)
+            return cal_score(game_state, self.player)
 
         if game_state.next_player != self.player:
             for move in game_state.potential_moves():

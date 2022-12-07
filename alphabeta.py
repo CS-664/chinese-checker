@@ -4,7 +4,6 @@ from board import *
 
 MAX_SCORE = 10000
 MIN_SCORE = -10000
-DEPTH = 3
 WIN_GAME_BONUS = 100
 
 def cal_score(game_state, player):
@@ -29,8 +28,9 @@ def cal_score(game_state, player):
 
 
 class AlphaBetaAgent():
-    def __init__(self, piece):
+    def __init__(self, piece, depth):
         self.player = piece
+        self.depth = depth
     def move(self, game_state):
         best_moves = []
         best_score = None 
@@ -39,7 +39,7 @@ class AlphaBetaAgent():
 
         for move in game_state.potential_moves():
             next_state = game_state.apply_move(move)
-            score = self.alphabeta_result(next_state, DEPTH, alpha, beta)
+            score = self.alphabeta_result(next_state, self.depth, alpha, beta)
             if next_state.is_over():
                     if next_state.winner() == self.player:
                         score += WIN_GAME_BONUS

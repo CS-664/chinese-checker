@@ -3,6 +3,24 @@ import math
 from randombot import RandomBot
 from player import Player
 
+def cal_score(game_state, player):
+    score = 0
+    bias_fine = 0.2
+    last_chess_fine = 0.5
+    last_chess = 0 
+    for p in game_state.board.get_all_pieces(player.value):
+        if player == Player.red:
+            layer = p.row + p.col #what layer is p in
+            if last_chess < 10 - layer:
+                last_chess = 10 - layer
+            score += layer - bias_fine * abs(p.row - p.col)
+        else:
+            layer = p.row + p.col
+            last_chess = max(last_chess, layer)
+            score += (10-layer) - bias_fine * abs(p.row - p.col)
+    score += 60 + bias_fine * 7 - last_chess_fine * last_chess
+    return score 
+
 class MCTSNode():
     def __init__(self, game_state, parent=None, move=None):
         self.game_state = game_state
@@ -49,6 +67,7 @@ class MCTSAgent():
 
         for i in range(self.num_games):
             node = root
+            #choose best available child
             while (not node.check_child()) and (not node.is_over()):
                 node = self.select_child(node)
 
@@ -60,7 +79,6 @@ class MCTSAgent():
             while node is not None:
                 node.record_win(winner)
                 node = node.parent
-            #print("{} games complete".format(i))
 
         best_move = None
         best_pct = -1.0
@@ -78,6 +96,7 @@ class MCTSAgent():
         best_score = -1
         best_child = None
         
+        #calculate UCB 
         for child in node.children:
             win_percentage = child.winning_rate(node.game_state.next_player)
             exploration_factor = math.sqrt(log_rollouts / child.num)
@@ -100,5 +119,7 @@ class MCTSAgent():
             game = game.apply_move(bot_move)
             rounds += 1
         if rounds == 400:
-            return None 
+            red_score = cal_score(game, Player.red)
+            blue_score = cal_score(game, Player.blue)
+            return Player.red if red_score > blue_score else Player.blue 
         return game.winner()

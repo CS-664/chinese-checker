@@ -186,7 +186,6 @@ class Game:
             if self.board.get(middle_point) is None:
                 continue
             sx, sy, mx, my = current_point.row, current_point.col, middle_point.row, middle_point.col 
-            #print("start is {}, middle is {}".format(start_point, middle_point))
             if sx - 1 == mx and sy == my: # upper 
                 end_point = Point(sx-2,sy)
             elif sx - 1 == mx and sy + 1 == my: # upper-right
@@ -199,14 +198,11 @@ class Game:
                 end_point = Point(sx+2, sy-2)
             elif sx == mx and sy - 1 == my: #left
                 end_point = Point(sx, sy-2)
-            #print("{}, {} to {}, {} is {}".format(current_point.row, current_point.col, end_point.row, end_point.col, self.is_valid_move(Move(current_point, end_point),start_point)))
             if self.is_valid_move(Move(current_point, end_point),start_point):
                 if end_point not in jumped:
                     jumped.append(current_point)
                     moves.append(Move(start_point, end_point))
-                    #print("start point is {}".format(end_point))
                     moves.extend(self.jump(start_point,end_point,jumped))
-                    #print("{} hello".format(self.jump(start_point,end_point,jumped)))
         return moves
 
     #return list of potential move of current player

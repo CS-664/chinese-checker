@@ -1,3 +1,10 @@
+'''
+    Shanghua Yang ysh99226@bu.edu
+    Xiangyu Hu xyuhu@bu.edu
+    Yilin Li lyl1021@bu.edu
+    Jiaxin Chen chenjiax@bu.edu
+'''
+
 from board import Game, Board, Move
 from player import Point, Player
 from alphabeta import AlphaBetaAgent
@@ -34,47 +41,19 @@ def main():
     orange = Player.orange
     pink = Player.pink
     round = 0
-    while True:
-
-        board_size = '6'#input("Please select board size (6/7/9): ")
-        if board_size == '6':
-            game = Game.new_game(6, 2)
-            break
-        elif board_size == '7' or board_size == '9':
-            player = input("Please select player number (1-5): ")
-            if ord('1') <= ord(player) <= ord('5'):
-                game = Game.new_game(int(board_size), int(player))
-                break
-            else:
-                print("Illegal number of player, Try Again!")
-                continue
-        else:
-            print("Illegal board size, Try Again!")
+    game = Game.new_game(6, 2)
     while not game.is_over() and round <= 250:
         round += 1
         game.board.print()
         #time.sleep(1)
-        alpha = MCTSAgent(5000, 2)
-        silly = AlphaBetaAgent(Player.blue)
+        agent1 = AlphaBetaAgent(Player.red, 3)
+        agent2 = GreedyAgent()
         if game.next_player == red:
-            
-            '''
-            while True:
-                try:
-                    human_row, human_col = input('Enter your move: ').split()
-                    break
-                except (ValueError):
-                    print("Invalid Input, Try again")
-            point = Point(int(human_row), int(human_col))
-            move = Move(point)
-            '''
-            move = alpha.move(game)
+            move = agent1.move(game)
         else:
-            move = silly.move(game)
+            move = agent2.move(game)
         game = game.apply_move(move)
         os.system('clear')
-        # move = bot.move(game)
-        # game = game.apply_move(move)
     game.board.print()
     winner = game.winner()
     if winner is not None:

@@ -1,6 +1,7 @@
 from board import Game, Board, Move
 from player import Point, Player
 from alphabeta import AlphaBetaAgent
+from greedy import GreedyAgent
 
 def cal_score(game_state, player):
     score = 0
@@ -26,7 +27,7 @@ def main():
     total_round = 0
     win_num = 0
     loss_num = 0
-    while game_num <= 100:
+    while game_num <= 5:
         game = Game.new_game(6, 2)
         round = 0
         step = 0
@@ -46,8 +47,8 @@ def main():
             step += 1
             total_round += 1
             game.board.print()
-            alpha1 = AlphaBetaAgent(Player.red)
-            alpha2 = AlphaBetaAgent(Player.blue)
+            alpha1 = GreedyAgent()
+            alpha2 = AlphaBetaAgent(Player.blue, 3)
             if game.next_player == Player.red:
                 move = alpha1.move(game)
             else:
@@ -59,11 +60,9 @@ def main():
                 win_num += 1
             else:
                 loss_num += 1   
-        if step_num != 0 and total_round != 0:   
-            print("Average step is {}, win_num is {}, draw_num is {}, loss_num is {}".format(total_round/game_num, win_num, draw_num, loss_num))
         game_num += 1
         step_num += 1
-    print("Average step is {}, win_num is {}, draw_num is {}, loss_num is {}".format(total_round/game_num, win_num, draw_num, loss_num))
+    print("Average step is {}, win_num is {}, loss_num is {}".format(total_round/game_num, win_num, loss_num))
     
 if __name__ == "__main__":
     main()

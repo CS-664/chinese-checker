@@ -3,8 +3,28 @@ from player import Point, Player
 from alphabeta import AlphaBetaAgent
 from randombot import RandomBot
 from greedy import GreedyAgent
+from mcts import MCTSAgent
 import os
 import time
+
+def cal_score(game_state, player):
+    score = 0
+    bias_fine = 0.2
+    last_chess_fine = 0.5
+    last_chess = 0 
+    for p in game_state.board.get_all_pieces(player.value):
+        if player == Player.red:
+            layer = p.row + p.col #what layer is p in
+            if last_chess < 10 - layer:
+                last_chess = 10 - layer
+            score += layer - bias_fine * abs(p.row - p.col)
+        else:
+            layer = p.row + p.col
+            last_chess = max(last_chess, layer)
+            score += (10-layer) - bias_fine * abs(p.row - p.col)
+    score += 60 + bias_fine * 7 - last_chess_fine * last_chess 
+        
+    return score
 
 def main():
     red = Player.red
@@ -30,12 +50,12 @@ def main():
                 continue
         else:
             print("Illegal board size, Try Again!")
-    while not game.is_over():
+    while not game.is_over() and round <= 250:
         round += 1
         game.board.print()
         #time.sleep(1)
-        alpha = AlphaBetaAgent(Player.red)
-        silly = GreedyAgent()
+        alpha = MCTSAgent(1000, 0.5)
+        silly = AlphaBetaAgent(Player.blue)
         if game.next_player == red:
             
             '''
@@ -59,6 +79,10 @@ def main():
     winner = game.winner()
     if winner is not None:
         print("{} is the winner in {} rounds".format(winner, round))
+    else:
+        red_score = cal_score(game, Player.red)
+        blue_score = cal_score(game, Player.blue)
+        print("{} is the winner".format(Player.red if red_score > blue_score else Player.blue))
 
 
 

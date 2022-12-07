@@ -39,6 +39,8 @@ class AlphaBetaAgent():
         for move in game_state.potential_moves():
             next_state = game_state.apply_move(move)
             score = self.alphabeta_result(next_state, DEPTH, alpha, beta)
+            if score == MAX_SCORE:
+                return move
             if not best_moves or score > best_score:
                 best_moves = [move]
                 best_score = score

@@ -54,7 +54,7 @@ def main():
         round += 1
         game.board.print()
         #time.sleep(1)
-        alpha = MCTSAgent(1000, 0.5)
+        alpha = MCTSAgent(5000, 2)
         silly = AlphaBetaAgent(Player.blue)
         if game.next_player == red:
             

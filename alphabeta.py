@@ -20,6 +20,7 @@ def cal_score(game_state, player):
         else:
             layer = p.row + p.col
             last_chess = max(last_chess, layer)
+            score += (10-layer) - bias_fine * abs(p.row - p.col)
     score += 60 + bias_fine * 7 - last_chess_fine * last_chess 
         
     return score
